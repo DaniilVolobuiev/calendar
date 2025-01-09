@@ -134,7 +134,6 @@ const TaskInput = styled("input", {
   fontSize: "14px",
 });
 
-
 interface Task {
   id: number;
   text: string;
@@ -233,10 +232,34 @@ const Calendar = () => {
     if (dayKey !== targetDayKey) {
       const task = tasks[dayKey].find((t) => t.id === taskId);
 
-      setTasks((prev:any) => ({
+      setTasks((prev: any) => ({
         ...prev,
-        [dayKey]: prev[dayKey].filter((t:Task) => t.id !== taskId),
+        [dayKey]: prev[dayKey].filter((t: Task) => t.id !== taskId),
         [targetDayKey]: [...(prev[targetDayKey] || []), task],
+      }));
+    }
+  };
+
+  const handleTaskReorder = (
+    event: React.DragEvent,
+    dayKey: string,
+    taskId: number
+  ) => {
+    const { dayKey: draggedDayKey, taskId: draggedTaskId } = JSON.parse(
+      event.dataTransfer.getData("text")
+    );
+
+    if (dayKey === draggedDayKey) {
+      const reorderedTasks = [...tasks[dayKey]];
+      const taskIndex = reorderedTasks.findIndex((task) => task.id === taskId);
+      const draggedTaskIndex = reorderedTasks.findIndex(
+        (task) => task.id === draggedTaskId
+      );
+
+      reorderedTasks.splice(taskIndex, 0, reorderedTasks.splice(draggedTaskIndex, 1)[0]);
+      setTasks((prevTasks) => ({
+        ...prevTasks,
+        [dayKey]: reorderedTasks,
       }));
     }
   };
@@ -246,34 +269,34 @@ const Calendar = () => {
     const today = new Date();
     const firstDayOfMonth = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
-  
+
     const prevMonth = month === 0 ? 11 : month - 1;
     const prevYear = month === 0 ? year - 1 : year;
     const daysInPrevMonth = new Date(prevYear, prevMonth + 1, 0).getDate();
-  
+
     for (let i = firstDayOfMonth - 1; i >= 0; i--) {
       const day = daysInPrevMonth - i;
       const dayKey = `${prevYear}-${String(prevMonth + 1).padStart(2, "0")}-${String(
         day
       ).padStart(2, "0")}`;
-  
+
       days.push(
         <Day key={dayKey} disabled>
           <strong style={{ color: "#aaa" }}>{day}</strong>
         </Day>
       );
     }
-  
+
     for (let day = 1; day <= daysInMonth; day++) {
       const dayKey = `${year}-${String(month + 1).padStart(2, "0")}-${String(
         day
       ).padStart(2, "0")}`;
       const currentDate = new Date(year, month, day);
       const isPast = currentDate < new Date(today.setHours(0, 0, 0, 0));
-  
+
       const holiday = holidays.find((holiday) => holiday.date === dayKey);
       const isHoliday = holiday !== undefined;
-  
+
       days.push(
         <Day
           key={dayKey}
@@ -288,11 +311,11 @@ const Calendar = () => {
           }}
         >
           <strong>{day}</strong>
-  
+
           {isHoliday && (
             <div style={{ fontSize: "12px", color: "red" }}>{holiday.name}</div>
           )}
-  
+
           {!isPast &&
             !isHoliday &&
             (tasks[dayKey] || [])
@@ -305,6 +328,8 @@ const Calendar = () => {
                   draggable
                   onDragStart={(e) => handleDragStart(e, dayKey, task.id)}
                   onClick={() => handleTaskEdit(task.id, task.text)}
+                  onDragOver={(e) => e.preventDefault()}
+                  onDrop={(e) => handleTaskReorder(e, dayKey, task.id)}
                 >
                   {editingTaskId === task.id ? (
                     <TaskInput
@@ -322,7 +347,7 @@ const Calendar = () => {
                   )}
                 </Task>
               ))}
-  
+
           {!isPast && !isHoliday && (
             <TaskInput
               placeholder="Add Task"
@@ -343,7 +368,7 @@ const Calendar = () => {
         </Day>
       );
     }
-  
+
     const totalCells = days.length;
     const remainingCells = 7 - (totalCells % 7);
     if (remainingCells < 7) {
@@ -356,10 +381,9 @@ const Calendar = () => {
         );
       }
     }
-  
+
     return days;
   };
-  
 
   return (
     <CalendarWrapper>
