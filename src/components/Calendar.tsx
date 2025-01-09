@@ -134,6 +134,13 @@ const TaskInput = styled("input", {
   fontSize: "14px",
 });
 
+const DayOfWeek = styled("div", {
+  fontSize: "16px",
+  fontWeight: "bold",
+  textAlign: "center",
+  color: "#4A90E2",
+});
+
 interface Task {
   id: number;
   text: string;
@@ -385,6 +392,16 @@ const Calendar = () => {
     return days;
   };
 
+  const generateDayOfWeekLabels = () => {
+    return (
+      <div style={{ display: "flex", justifyContent: "space-around", width: "100%", marginBottom: "8px" }}>
+        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day, index) => (
+          <DayOfWeek key={index}>{day}</DayOfWeek>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <CalendarWrapper>
       <Header>
@@ -404,7 +421,10 @@ const Calendar = () => {
           <span>Loading Holidays...</span>
         </div>
       ) : (
-        <Grid>{generateDays()}</Grid>
+        <>
+          {generateDayOfWeekLabels()}
+          <Grid>{generateDays()}</Grid>
+        </>
       )}
     </CalendarWrapper>
   );
