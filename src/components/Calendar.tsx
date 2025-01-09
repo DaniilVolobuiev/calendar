@@ -11,7 +11,6 @@ const CalendarWrapper = styled("div", {
   justifyContent: "flex-start",
   overflow: "hidden",
   padding: "$lg",
-  background: "linear-gradient(135deg, #f5f7fa, #c3cfe2)",
   fontFamily: "'Inter', sans-serif",
   boxSizing: "border-box",
 });
@@ -24,7 +23,7 @@ const Header = styled("div", {
   padding: "$md",
   marginBottom: "$lg",
   boxSizing: "border-box",
-  backgroundColor: "#ffffffaa",
+  backgroundColor: "#FFFFFFCC",
   boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
   borderRadius: "$sm",
   backdropFilter: "blur(5px)",
@@ -35,12 +34,12 @@ const Title = styled("h2", {
   fontSize: "24px",
   textAlign: "center",
   flex: 1,
-  color: "#333",
+  color: "#1F2937",
 });
 
 const Button = styled("button", {
-  backgroundColor: "#4caf50",
-  color: "#fff",
+  backgroundColor: "#4A90E2",
+  color: "#FFFFFF",
   border: "none",
   cursor: "pointer",
   fontSize: "18px",
@@ -57,13 +56,14 @@ const Button = styled("button", {
 const SearchInput = styled("input", {
   width: "100%",
   padding: "$md",
+  marginX: "$md",
   marginBottom: "$lg",
-  border: "1px solid #ccc",
+  border: "1px solid #D1D5DB",
   borderRadius: "8px",
   fontSize: "16px",
   boxShadow: "inset 0px 2px 4px rgba(0, 0, 0, 0.1)",
   "&:focus": {
-    borderColor: "#4caf50",
+    borderColor: "#4A90E2",
     outline: "none",
   },
 });
@@ -77,7 +77,7 @@ const Grid = styled("div", {
   overflowY: "auto",
   padding: "20px",
   boxSizing: "border-box",
-  background: "#ffffffcc",
+  background: "#FFFFFFCC",
   borderRadius: "12px",
   boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
 });
@@ -86,21 +86,21 @@ const Day = styled("div", {
   position: "relative",
   padding: "$lg",
   textAlign: "center",
-  border: "1px solid #e0e0e0",
+  border: "1px solid #D1D5DB",
   borderRadius: "8px",
-  backgroundColor: "#ffffff",
+  backgroundColor: "#FFFFFF",
   boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.05)",
   cursor: "pointer",
   transition: "background-color 0.3s, transform 0.2s",
   "&:hover": {
-    backgroundColor: "#f0f8ff",
+    backgroundColor: "#FFFBCC",
     transform: "scale(1.03)",
   },
   variants: {
     disabled: {
       true: {
-        backgroundColor: "#f5f5f5",
-        color: "#999",
+        backgroundColor: "#F9FAFB",
+        color: "#6B7280",
         pointerEvents: "none",
         cursor: "not-allowed",
         boxShadow: "none",
@@ -112,8 +112,8 @@ const Day = styled("div", {
 const Task = styled("div", {
   marginTop: "$sm",
   padding: "$sm",
-  backgroundColor: "#4caf50",
-  color: "#fff",
+  backgroundColor: "#F06292",
+  color: "#FFFFFF",
   borderRadius: "4px",
   boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
   fontSize: "14px",
@@ -121,7 +121,7 @@ const Task = styled("div", {
   cursor: "grab",
   transition: "background-color 0.3s",
   "&:hover": {
-    backgroundColor: "#45a049",
+    backgroundColor: "#E55B81",
   },
 });
 
@@ -129,10 +129,11 @@ const TaskInput = styled("input", {
   width: "100%",
   margin: "$xs 0",
   padding: "$xs",
-  border: "1px solid $border",
-  borderRadius: "$sm",
+  border: "1px solid #D1D5DB",
+  borderRadius: "8px",
   fontSize: "14px",
 });
+
 
 interface Task {
   id: number;
@@ -150,7 +151,6 @@ const Calendar = () => {
   const [editingTaskId, setEditingTaskId] = useState<number | null>(null);
   const [editingText, setEditingText] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [countryCode, setCountryCode] = useState<string>("");
   const [holidays, setHolidays] = useState<Holiday[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -256,7 +256,6 @@ const Calendar = () => {
       const dayKey = `${prevYear}-${String(prevMonth + 1).padStart(2, "0")}-${String(
         day
       ).padStart(2, "0")}`;
-      const currentDate = new Date(prevYear, prevMonth, day);
   
       days.push(
         <Day key={dayKey} disabled>
